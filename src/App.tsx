@@ -8,6 +8,8 @@ import PageView from './pages/PageView';
 import SharedPage from './pages/SharedPage';
 import { supabase } from './lib/supabase';
 import { User, Workspace, Page } from './types';
+import { useWorkspaceStore } from './store/workspace';
+import { usePageStore } from './store/page';
 
 // Sample data for development mode
 const SAMPLE_USER: User = {
@@ -186,41 +188,14 @@ function App() {
   const { getUser } = useAuthStore();
   const [isDevMode, setIsDevMode] = useState(false);
 
+  // Check for dev mode in URL
   useEffect(() => {
-    // Check for dev mode in URL
     const urlParams = new URLSearchParams(window.location.search);
     const devMode = urlParams.get('dev_mode');
     
     if (devMode === 'true') {
-      // Set dev mode
-      setIsDevMode(true);
-      
-      // Set sample data directly in the stores
-      const authStore = useAuthStore.getState();
-      const workspaceStore = useWorkspaceStore.getState();
-      const pageStore = usePageStore.getState();
-      
-      // Set user
-      authStore.user = SAMPLE_USER;
-      
-      // Set workspace
-      workspaceStore.workspaces = [SAMPLE_WORKSPACE];
-      workspaceStore.currentWorkspace = SAMPLE_WORKSPACE;
-      
-      // Set pages
-      pageStore.pages = SAMPLE_PAGES.filter(page => !page.parent_id);
-      pageStore.currentPage = SAMPLE_PAGES[0];
-      
-      // Add children to pages
-      SAMPLE_PAGES.forEach(page => {
-        if (page.parent_id) {
-          const parentPage = SAMPLE_PAGES.find(p => p.id === page.parent_id);
-          if (parentPage) {
-            if (!parentPage.children) parentPage.children = [];
-            parentPage.children.push(page);
-          }
-        }
-      });
+      console.log('Activating development mode');
+      activateDevMode();
     } else {
       // Normal authentication flow
       getUser();
@@ -235,6 +210,41 @@ function App() {
       };
     }
   }, [getUser]);
+
+  // Function to activate development mode
+  const activateDevMode = () => {
+    console.log('Setting up development mode data');
+    setIsDevMode(true);
+    
+    // Set sample data directly in the stores
+    const authStore = useAuthStore.getState();
+    const workspaceStore = useWorkspaceStore.getState();
+    const pageStore = usePageStore.getState();
+    
+    // Set user
+    authStore.user = SAMPLE_USER;
+    
+    // Set workspace
+    workspaceStore.workspaces = [SAMPLE_WORKSPACE];
+    workspaceStore.currentWorkspace = SAMPLE_WORKSPACE;
+    
+    // Set pages
+    const rootPages = SAMPLE_PAGES.filter(page => !page.parent_id);
+    
+    // Add children to pages
+    SAMPLE_PAGES.forEach(page => {
+      if (page.parent_id) {
+        const parentPage = SAMPLE_PAGES.find(p => p.id === page.parent_id);
+        if (parentPage) {
+          if (!parentPage.children) parentPage.children = [];
+          parentPage.children.push(page);
+        }
+      }
+    });
+    
+    pageStore.pages = rootPages;
+    pageStore.currentPage = rootPages[0];
+  };
 
   // Dev mode indicator
   const DevModeIndicator = () => {
@@ -267,6 +277,9 @@ function App() {
             const url = new URL(window.location.href);
             url.searchParams.delete('dev_mode');
             window.history.pushState({}, '', url.toString());
+            
+            // Redirect to home
+            window.location.href = '/';
           }}
         >
           Exit

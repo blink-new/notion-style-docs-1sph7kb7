@@ -1,11 +1,11 @@
 
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuthStore } from '../../store/auth';
 import { Button } from '../ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
-import { LogOut, Menu, Plus } from 'lucide-react';
+import { LogOut, Menu } from 'lucide-react';
 import { useMobile } from '../../hooks/use-mobile';
 
 interface HeaderProps {
@@ -14,7 +14,6 @@ interface HeaderProps {
 
 export default function Header({ onLogin }: HeaderProps) {
   const { user, signOut } = useAuthStore();
-  const navigate = useNavigate();
   const isMobile = useMobile();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
