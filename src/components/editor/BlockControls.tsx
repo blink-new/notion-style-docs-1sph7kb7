@@ -40,7 +40,7 @@ export default function BlockControls({ children }: BlockControlsProps) {
       match: n =>
         !Editor.isEditor(n) &&
         SlateElement.isElement(n) &&
-        ['bulleted-list', 'numbered-list'].includes(n.type),
+        ['bulleted-list', 'numbered-list'].includes(n.type as string),
       split: true,
     });
 
