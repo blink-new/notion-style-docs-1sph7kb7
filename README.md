@@ -1,54 +1,52 @@
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Notion-Style Documentation App
 
-Currently, two official plugins are available:
+A Notion-inspired documentation app with a rich block-based text editor, collapsible sidebar for page organization, Supabase authentication, shareable pages, page linking, and drag-and-drop reordering.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+- **Authentication**: Email/password authentication using Supabase Auth
+- **Workspace Management**: Create and manage multiple workspaces
+- **Page Organization**: Hierarchical page structure with nested pages
+- **Rich Text Editor**: Block-based editor with formatting options
+- **Page Sharing**: Make pages public and share them with others
+- **Real-time Saving**: Content is saved automatically as you type
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Tech Stack
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+- **Frontend**: React + Vite
+- **UI Components**: ShadCN UI
+- **Styling**: Tailwind CSS
+- **Authentication & Database**: Supabase
+- **State Management**: Zustand
+- **Text Editor**: Slate.js
+- **Drag and Drop**: DND Kit
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Getting Started
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Set up environment variables:
+   - `VITE_SUPABASE_URL`: Your Supabase project URL
+   - `VITE_SUPABASE_ANON_KEY`: Your Supabase anonymous key
+4. Run the development server: `npm run dev`
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+## Database Schema
+
+The application uses the following database tables:
+
+- **users**: Extends Supabase auth users with additional profile information
+- **workspaces**: Represents a collection of pages
+- **pages**: Stores page content and metadata
+
+## Usage
+
+1. Sign up for an account
+2. Create a workspace
+3. Add pages to your workspace
+4. Edit pages using the rich text editor
+5. Share pages with others by making them public
+
+## License
+
+MIT
