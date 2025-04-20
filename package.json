@@ -68,7 +68,8 @@
     "slate-history": "latest",
     "@dnd-kit/sortable": "latest",
     "@dnd-kit/utilities": "latest",
-    "zustand": "latest"
+    "zustand": "latest",
+    "@tailwindcss/typography": "latest"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
