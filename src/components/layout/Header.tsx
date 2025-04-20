@@ -1,8 +1,7 @@
 
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/auth';
-import { useDevMode } from '../../lib/dev-mode';
 import { Button } from '../ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
@@ -15,7 +14,7 @@ interface HeaderProps {
 
 export default function Header({ onLogin }: HeaderProps) {
   const { user, signOut } = useAuthStore();
-  const { isDevMode, activateDevMode } = useDevMode();
+  const navigate = useNavigate();
   const isMobile = useMobile();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -36,6 +35,13 @@ export default function Header({ onLogin }: HeaderProps) {
       .join('')
       .toUpperCase()
       .substring(0, 2);
+  };
+
+  const activateDevMode = () => {
+    // Add dev_mode parameter to URL
+    const url = new URL(window.location.href);
+    url.searchParams.set('dev_mode', 'true');
+    window.location.href = url.toString();
   };
 
   return (
@@ -67,7 +73,7 @@ export default function Header({ onLogin }: HeaderProps) {
       </div>
 
       <div className="flex items-center gap-2">
-        {!user && !isDevMode && (
+        {!user && (
           <>
             <Button variant="outline" onClick={activateDevMode}>
               Demo Mode
@@ -76,7 +82,7 @@ export default function Header({ onLogin }: HeaderProps) {
           </>
         )}
 
-        {(user || isDevMode) && (
+        {user && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-8 w-8 rounded-full">
