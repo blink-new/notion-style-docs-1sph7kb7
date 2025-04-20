@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/auth';
 import { Button } from '../ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
@@ -14,6 +14,7 @@ interface HeaderProps {
 
 export default function Header({ onLogin }: HeaderProps) {
   const { user, signOut } = useAuthStore();
+  const navigate = useNavigate();
   const isMobile = useMobile();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -36,11 +37,8 @@ export default function Header({ onLogin }: HeaderProps) {
       .substring(0, 2);
   };
 
-  const activateDevMode = () => {
-    // Add dev_mode parameter to URL
-    const url = new URL(window.location.href);
-    url.searchParams.set('dev_mode', 'true');
-    window.location.href = url.toString();
+  const goToDemo = () => {
+    navigate('/demo');
   };
 
   return (
@@ -74,7 +72,7 @@ export default function Header({ onLogin }: HeaderProps) {
       <div className="flex items-center gap-2">
         {!user && (
           <>
-            <Button variant="outline" onClick={activateDevMode}>
+            <Button variant="outline" onClick={goToDemo}>
               Demo Mode
             </Button>
             <Button onClick={onLogin}>Sign In</Button>
