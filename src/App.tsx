@@ -7,6 +7,8 @@ import HomePage from './pages/HomePage';
 import PageView from './pages/PageView';
 import SharedPage from './pages/SharedPage';
 import { supabase } from './lib/supabase';
+import { DevModeProvider } from './lib/dev-mode';
+import DevModeIndicator from './components/layout/DevModeIndicator';
 
 function App() {
   const { getUser } = useAuthStore();
@@ -26,16 +28,19 @@ function App() {
   }, [getUser]);
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<AppLayout />}>
-          <Route index element={<HomePage />} />
-          <Route path="page/:id" element={<PageView />} />
-        </Route>
-        <Route path="/shared/:id" element={<SharedPage />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
+    <DevModeProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<AppLayout />}>
+            <Route index element={<HomePage />} />
+            <Route path="page/:id" element={<PageView />} />
+          </Route>
+          <Route path="/shared/:id" element={<SharedPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+        <DevModeIndicator />
+      </BrowserRouter>
+    </DevModeProvider>
   );
 }
 

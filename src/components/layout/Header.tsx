@@ -1,139 +1,103 @@
 
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuthStore } from '../../store/auth';
-import { useWorkspaceStore } from '../../store/workspace';
+import { useDevMode } from '../../lib/dev-mode';
 import { Button } from '../ui/button';
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuLabel, 
-  DropdownMenuSeparator, 
-  DropdownMenuTrigger 
-} from '../ui/dropdown-menu';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogFooter,
-  DialogClose
-} from '../ui/dialog';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
-import { ChevronDown, LogOut, Plus, Settings, User } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
+import { LogOut, Menu, Plus } from 'lucide-react';
+import { useMobile } from '../../hooks/use-mobile';
 
 interface HeaderProps {
   onLogin: () => void;
 }
 
 export default function Header({ onLogin }: HeaderProps) {
-  const [isCreateWorkspaceOpen, setIsCreateWorkspaceOpen] = useState(false);
-  const [newWorkspaceName, setNewWorkspaceName] = useState('');
   const { user, signOut } = useAuthStore();
-  const { workspaces, currentWorkspace, createWorkspace, setCurrentWorkspace } = useWorkspaceStore();
-  const navigate = useNavigate();
+  const { isDevMode, activateDevMode } = useDevMode();
+  const isMobile = useMobile();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const handleCreateWorkspace = async () => {
-    if (newWorkspaceName.trim()) {
-      await createWorkspace(newWorkspaceName.trim());
-      setNewWorkspaceName('');
-      setIsCreateWorkspaceOpen(false);
-    }
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+    document.body.classList.toggle('sidebar-open');
   };
 
-  const handleWorkspaceChange = (workspace: typeof workspaces[0]) => {
-    setCurrentWorkspace(workspace);
-    navigate('/');
+  const handleSignOut = async () => {
+    await signOut();
+  };
+
+  const getInitials = (name: string | null) => {
+    if (!name) return 'U';
+    return name
+      .split(' ')
+      .map(part => part[0])
+      .join('')
+      .toUpperCase()
+      .substring(0, 2);
   };
 
   return (
-    <header className="border-b bg-background px-6 py-3">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <h1 className="text-xl font-bold text-primary">Notion Docs</h1>
-          
-          {user && currentWorkspace && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="flex items-center gap-2">
-                  {currentWorkspace.name}
-                  <ChevronDown size={16} />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-56">
-                <DropdownMenuLabel>Workspaces</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                {workspaces.map((workspace) => (
-                  <DropdownMenuItem 
-                    key={workspace.id}
-                    onClick={() => handleWorkspaceChange(workspace)}
-                    className={workspace.id === currentWorkspace.id ? 'bg-accent' : ''}
-                  >
-                    {workspace.name}
-                  </DropdownMenuItem>
-                ))}
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => setIsCreateWorkspaceOpen(true)}>
-                  <Plus size={16} className="mr-2" />
-                  Create Workspace
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
-        </div>
-        
-        <div>
-          {user ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-full">
-                  <User size={20} />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Settings size={16} className="mr-2" />
-                  Settings
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => signOut()}>
-                  <LogOut size={16} className="mr-2" />
-                  Sign out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <Button onClick={onLogin} className="login-button">Login</Button>
-          )}
-        </div>
-      </div>
-      
-      <Dialog open={isCreateWorkspaceOpen} onOpenChange={setIsCreateWorkspaceOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Create Workspace</DialogTitle>
-          </DialogHeader>
-          <div className="py-4">
-            <Label htmlFor="workspace-name">Workspace Name</Label>
-            <Input
-              id="workspace-name"
-              value={newWorkspaceName}
-              onChange={(e) => setNewWorkspaceName(e.target.value)}
-              placeholder="My Workspace"
-              className="mt-2"
-            />
+    <header className="flex h-14 items-center justify-between border-b bg-background px-4 py-2">
+      <div className="flex items-center gap-2">
+        {isMobile && (
+          <Button variant="ghost" size="icon" onClick={toggleSidebar}>
+            <Menu className="h-5 w-5" />
+          </Button>
+        )}
+        <Link to="/" className="flex items-center gap-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-blue-600 text-white">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="h-5 w-5"
+            >
+              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+              <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+            </svg>
           </div>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DialogClose>
-            <Button onClick={handleCreateWorkspace}>Create</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          <span className="text-lg font-semibold">Notion Docs</span>
+        </Link>
+      </div>
+
+      <div className="flex items-center gap-2">
+        {!user && !isDevMode && (
+          <>
+            <Button variant="outline" onClick={activateDevMode}>
+              Demo Mode
+            </Button>
+            <Button onClick={onLogin}>Sign In</Button>
+          </>
+        )}
+
+        {(user || isDevMode) && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src={user?.avatar_url || ''} alt={user?.display_name || 'User'} />
+                  <AvatarFallback>{getInitials(user?.display_name)}</AvatarFallback>
+                </Avatar>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem className="font-medium">
+                {user?.display_name || user?.email}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleSignOut}>
+                <LogOut className="mr-2 h-4 w-4" />
+                <span>Sign out</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
+      </div>
     </header>
   );
 }
