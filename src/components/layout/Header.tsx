@@ -106,7 +106,7 @@ export default function Header({ onLogin }: HeaderProps) {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button onClick={onLogin}>Login</Button>
+            <Button onClick={onLogin} className="login-button">Login</Button>
           )}
         </div>
       </div>
