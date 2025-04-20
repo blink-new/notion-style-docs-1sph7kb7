@@ -60,6 +60,7 @@ export default function Sidebar() {
           size="icon" 
           onClick={() => setIsCreatePageOpen(true)}
           disabled={!currentWorkspace}
+          className="sidebar-create-page-button"
         >
           <Plus size={16} />
         </Button>

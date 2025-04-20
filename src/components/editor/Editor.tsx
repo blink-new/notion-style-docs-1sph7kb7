@@ -4,7 +4,6 @@ import { createEditor, Descendant } from 'slate';
 import { Slate, Editable, withReact, RenderElementProps, RenderLeafProps } from 'slate-react';
 import { withHistory } from 'slate-history';
 import { usePageStore } from '../../store/page';
-import BlockControls from './BlockControls';
 import { cn } from '../../lib/utils';
 
 interface EditorProps {
@@ -101,19 +100,6 @@ export default function Editor({ pageId, initialContent }: EditorProps) {
           spellCheck
           autoFocus
           className="min-h-[calc(100vh-200px)] outline-none"
-          renderPlaceholder={({ children, attributes }) => (
-            <div {...attributes}>
-              <p className="pointer-events-none absolute text-muted-foreground">{children}</p>
-            </div>
-          )}
-          decorate={([node, path]) => {
-            return [];
-          }}
-          renderBlock={({ children, attributes }) => (
-            <BlockControls>
-              <div {...attributes}>{children}</div>
-            </BlockControls>
-          )}
         />
       </Slate>
     </div>
