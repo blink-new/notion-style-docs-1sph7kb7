@@ -3,7 +3,6 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { useAuthStore } from '../store/auth';
 import { useWorkspaceStore } from '../store/workspace';
 import { usePageStore } from '../store/page';
-import { supabase } from './supabase';
 import { User, Workspace, Page } from '../types';
 
 // Sample data
@@ -232,7 +231,6 @@ export const useDevMode = () => useContext(DevModeContext);
 export const DevModeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isDevMode, setIsDevMode] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { user } = useAuthStore();
   
   // Get the stores
   const authStore = useAuthStore();
@@ -250,7 +248,7 @@ export const DevModeProvider: React.FC<{ children: React.ReactNode }> = ({ child
   }, []);
 
   const activateDevMode = () => {
-    if (user) {
+    if (authStore.user) {
       // If already logged in, don't override
       return;
     }
