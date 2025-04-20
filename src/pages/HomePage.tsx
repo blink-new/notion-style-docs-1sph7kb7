@@ -1,12 +1,14 @@
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/auth';
 import { usePageStore } from '../store/page';
 import { Button } from '../components/ui/button';
 import { PlusCircle } from 'lucide-react';
+import AuthModal from '../components/auth/AuthModal';
 
 export default function HomePage() {
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const { user } = useAuthStore();
   const { pages, currentPage } = usePageStore();
   const navigate = useNavigate();
@@ -26,8 +28,11 @@ export default function HomePage() {
           A Notion-inspired documentation app with a rich block-based text editor, collapsible sidebar for page organization, and more.
         </p>
         <div className="space-y-4">
-          <p className="text-center">Sign in to get started</p>
+          <Button onClick={() => setIsAuthModalOpen(true)} className="px-8">
+            Sign in to get started
+          </Button>
         </div>
+        <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
       </div>
     );
   }
